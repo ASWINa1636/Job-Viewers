@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Viewers - Find Your Dream Job</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        h1 strong {
+            color: #667eea;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 30px;
+            background: white;
+            padding: 8px 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        
+        .menu:hover {
+            transform: scale(1.05);
+        }
+        
+        .menu-content {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 80px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            width: 180px;
+            overflow: hidden;
+            z-index: 999;
+        }
+        
+        .menu-content.show {
+            display: block;
+        }
+        
+        .menu-content a {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .menu-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-content a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .add-job-btn {
+            background: #28a745;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .add-job-btn:hover {
+            background: #218838;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .search-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        input[type="text"] {
+            padding: 14px 18px;
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .custom-file-upload {
+            background: #00a8a8;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .custom-file-upload:hover {
+            background: #008888;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 168, 168, 0.3);
+        }
+        
+        .search-btn {
+            background: #667eea;
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        #results-heading {
+            color: #333;
+            font-size: 1.5em;
+            margin: 30px 0 15px;
+        }
+        
+        #skills-extracted {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .results-container {
+            margin-top: 20px;
+        }
+        
+        .placeholder {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+        
+        .job-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .job-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .job-card p {
+            color: #555;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .job-card strong {
+            color: #667eea;
+        }
+        
+        .job-meta {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .job-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .apply-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .apply-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .search-section {
+                flex-direction: column;
+            }
+            
+            input[type="text"] {
+                width: 100%;
+            }
+            
+            .search-btn,
+            .custom-file-upload {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu" onclick="toggleMenu()">></div>
+    <div class="menu-content" id="menu-content">
+        {% if session.get("user_id") %}
+            <a href="{{ url_for('edit_company_profile') }}">🏢 Company Profile</a>
+            <a href="{{ url_for('add_job') }}" class="add-job-btn">➕ Add Job</a>
+            <a href="{{ url_for('company_logout') }}" class="logout-btn">🚪 Logout</a>
+        {% else %}
+            <a href="{{ url_for('company_login') }}">🔐 Login</a>
+            <a href="{{ url_for('company_signup') }}">📝 Sign Up</a>
+        {% endif %}
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to <strong>JOB VIEWERS</strong></h1>
+            <p class="subtitle">Find your perfect job match with AI-powered resume analysis</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="search-section">
+            <input id="skills-input" type="text" placeholder="Enter skills (e.g., Python, Java, React)">
+            <label for="file-upload" class="custom-file-upload">📄 Upload Resume</label>
+            <input id="file-upload" type="file" hidden onchange="uploadResume()" accept=".pdf,.docx,.png,.jpg,.jpeg">
+            <button class="search-btn" onclick="searchJobs()">🔍 Search</button>
+        </div>
+        
+        <h2 id="results-heading">Job Recommendations</h2>
+        <p id="skills-extracted"></p>
+        <div class="results-container" id="results-container">
+            <p class="placeholder">Upload your resume or search by skills to find matching jobs...</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("menu-content");
+            menu.classList.toggle("show");
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById("menu-content");
+            const menuButton = document.querySelector(".menu");
+            if (!menu.contains(event.target) && !menuButton.contains(event.target)) {
+                menu.classList.remove("show");
+            }
+        });
+        
+        function searchJobs() {
+            const skills = document.getElementById("skills-input").value.trim();
+            if (!skills) {
+                alert("Please enter at least one skill to search.");
+                return;
+            }
+            
+            showLoading();
+            document.getElementById("results-heading").innerText = "Based on your search:";
+            document.getElementById("skills-extracted").innerText = "";
+            
+            fetch(`/search?skills=${encodeURIComponent(skills)}`)
+                .then(response => response.json())
+                .then(data => displayResults(data.job_recommendations))
+                .catch(error => {
+                    console.error("Error fetching jobs:", error);
+                    showError("Failed to fetch jobs. Please try again.");
+                });
+        }
+        
+        function uploadResume() {
+            const fileInput = document.getElementById("file-upload");
+            if (!fileInput.files.length) return;
+            
+            const file = fileInput.files[0];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (file.size > maxSize) {
+                alert("File size exceeds 10MB. Please upload a smaller file.");
+                fileInput.value = "";
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append("file", file);
+            
+            showLoading();
+            document.getElementById("results-heading").innerText = "Analyzing your resume...";
+            document.getElementById("skills-extracted").innerText = "";
+            
+            fetch("/upload", { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showError(data.error);
+                        return;
+                    }
+                    document.getElementById("results-heading").innerText = "Based on your resume:";
+                    displayResults(data.job_recommendations);
+                    if (data.extracted_skills && data.extracted_skills.length > 0) {
+                        document.getElementById("skills-extracted").innerText = 
+                            "✅ Extracted Skills: " + data.extracted_skills.join(", ");
+                    } else {
+                        document.getElementById("skills-extracted").innerText = 
+                            "⚠️ No skills detected in your resume. Try uploading a different format.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error uploading file:", error);
+                    showError("Failed to process resume. Please try again.");
+                })
+                .finally(() => {
+                    fileInput.value = ""; // Clear file input
+                });
+        }
+        
+        function showLoading() {
+            const resultsContainer = document.getElementById("results-container");
+            resultsContainer.innerHTML = '<p class="loading">⏳ Loading...</p>';
+        }
+        
+        function showError(message) {
+            const resultsContainer = document.getElementById("results-container");
+            resultsContainer.innerHTML = `<p class="placeholder" style="color: #dc3545;">❌ ${message}</p>`;
+        }
+        
+        function displayResults(jobs) {
+            const resultsContainer = document.getElementById("results-container");
+            resultsContainer.innerHTML = "";
+            
+            if (!jobs || jobs.length === 0) {
+                resultsContainer.innerHTML = '<p class="placeholder">😞 No matching jobs found. Try different skills or upload a resume.</p>';
+                return;
+            }
+            
+            jobs.forEach(job => {
+                const jobElement = document.createElement("div");
+                jobElement.classList.add("job-card");
+                
+                // Create Apply button HTML if application link exists
+                let applyButton = '';
+                if (job.application_link && job.application_link.trim() !== '') {
+                    applyButton = `
+                        <div class="apply-section">
+                            <a href="${escapeHtml(job.application_link)}" target="_blank" class="apply-btn">
+                                🚀 Apply Now
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                // Additional job info
+                const jobType = job.job_type || 'Full-time';
+                const experienceLevel = job.experience_level || 'Mid-level';
+                
+                jobElement.innerHTML = `
+                    <h3>💼 ${escapeHtml(job.title)} at ${escapeHtml(job.company)}</h3>
+                    <div class="job-meta">
+                        <span class="job-badge">${escapeHtml(jobType)}</span>
+                        <span class="job-badge">${escapeHtml(experienceLevel)}</span>
+                    </div>
+                    <p><strong>📍 Location:</strong> ${escapeHtml(job.location)}</p>
+                    <p><strong>📋 Description:</strong> ${escapeHtml(job.description)}</p>
+                    <p><strong>🎯 Required Skills:</strong> ${job.required_skills.map(s => escapeHtml(s)).join(", ")}</p>
+                    <p><strong>💰 Salary:</strong> ${escapeHtml(job.salary)}</p>
+                    <p><strong>📅 Posted:</strong> ${escapeHtml(job.date_posted)}</p>
+                    ${applyButton}
+                `;
+                resultsContainer.appendChild(jobElement);
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Allow Enter key to search
+        document.getElementById("skills-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                searchJobs();
+            }
+        });
+    </script>
+</body>
+</html>

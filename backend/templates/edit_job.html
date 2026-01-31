@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job - Job Viewers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #333;
+        }
+        .section-title {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group-full { grid-column: 1 / -1; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        .required { color: #dc3545; }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        .help-text {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Edit Job Posting</h1>
+        
+        <form method="POST" action="{{ url_for('edit_job', job_id=job.id) }}">
+            <h3 class="section-title">Basic Information</h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Job Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" value="{{ job.title }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location <span class="required">*</span></label>
+                    <input type="text" id="location" name="location" value="{{ job.location }}" required>
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="job_type">Job Type</label>
+                    <select id="job_type" name="job_type">
+                        <option value="Full-time" {% if job.job_type == 'Full-time' %}selected{% endif %}>Full-time</option>
+                        <option value="Part-time" {% if job.job_type == 'Part-time' %}selected{% endif %}>Part-time</option>
+                        <option value="Contract" {% if job.job_type == 'Contract' %}selected{% endif %}>Contract</option>
+                        <option value="Internship" {% if job.job_type == 'Internship' %}selected{% endif %}>Internship</option>
+                        <option value="Freelance" {% if job.job_type == 'Freelance' %}selected{% endif %}>Freelance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employment_type">Work Mode</label>
+                    <select id="employment_type" name="employment_type">
+                        <option value="On-site" {% if job.employment_type == 'On-site' %}selected{% endif %}>On-site</option>
+                        <option value="Remote" {% if job.employment_type == 'Remote' %}selected{% endif %}>Remote</option>
+                        <option value="Hybrid" {% if job.employment_type == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="experience_level">Experience Level</label>
+                    <select id="experience_level" name="experience_level">
+                        <option value="Entry-level" {% if job.experience_level == 'Entry-level' %}selected{% endif %}>Entry-level</option>
+                        <option value="Mid-level" {% if job.experience_level == 'Mid-level' %}selected{% endif %}>Mid-level</option>
+                        <option value="Senior" {% if job.experience_level == 'Senior' %}selected{% endif %}>Senior</option>
+                        <option value="Lead" {% if job.experience_level == 'Lead' %}selected{% endif %}>Lead</option>
+                        <option value="Executive" {% if job.experience_level == 'Executive' %}selected{% endif %}>Executive</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="salary">Salary Range <span class="required">*</span></label>
+                    <input type="text" id="salary" name="salary" value="{{ job.salary }}" required>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Job Details</h3>
+            
+            <div class="form-group form-group-full">
+                <label for="description">Job Description <span class="required">*</span></label>
+                <textarea id="description" name="description" required>{{ job.description }}</textarea>
+            </div>
+            
+            <div class="form-group form-group-full">
+                <label for="responsibilities">Key Responsibilities</label>
+                <textarea id="responsibilities" name="responsibilities">{{ job.responsibilities }}</textarea>
+            </div>
+            
+            <div class="form-group form-group-full">
+                <label for="qualifications">Qualifications</label>
+                <textarea id="qualifications" name="qualifications">{{ job.qualifications }}</textarea>
+            </div>
+            
+            <h3 class="section-title">Skills & Requirements</h3>
+            
+            <div class="form-group form-group-full">
+                <label for="required_skills">Required Skills <span class="required">*</span></label>
+                <input type="text" id="required_skills" name="required_skills" value="{{ job.required_skills }}" required>
+                <div class="help-text">Enter skills separated by commas</div>
+            </div>
+            
+            <div class="form-group form-group-full">
+                <label for="benefits">Benefits & Perks</label>
+                <textarea id="benefits" name="benefits">{{ job.benefits }}</textarea>
+            </div>
+            
+            <h3 class="section-title">Application Information</h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="application_link">Application Link <span class="required">*</span></label>
+                    <input type="url" id="application_link" name="application_link" value="{{ job.application_link }}" required>
+                    <div class="help-text">URL where candidates can apply</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deadline">Application Deadline</label>
+                    <input type="date" id="deadline" name="deadline" value="{{ job.deadline }}">
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">💾 Update Job</button>
+        </form>
+        
+        <div class="back-link">
+            <a href="{{ url_for('company_dashboard') }}">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const applicationLink = document.getElementById('application_link').value.trim();
+            
+            if (!applicationLink.startsWith('http://') && !applicationLink.startsWith('https://')) {
+                e.preventDefault();
+                alert('Application link must start with http:// or https://');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

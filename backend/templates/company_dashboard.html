@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Dashboard - Job Viewers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .profile-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .help-text {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            padding: 14px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .job-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .job-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .job-card p {
+            color: #555;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .job-card strong {
+            color: #667eea;
+        }
+        
+        .job-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-edit {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+        
+        .btn-edit:hover {
+            background: #218838;
+        }
+        
+        .btn-delete {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .job-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .btn-add-job {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-add-job:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .toggle-form-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-form-btn:hover {
+            background: #5568d3;
+        }
+        
+        .profile-form {
+            display: none;
+        }
+        
+        .profile-form.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Company Dashboard</h1>
+        <p class="subtitle">Manage your company information and job postings</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Company Dashboard Section -->
+        <div class="profile-section">
+            <h2>Company Information</h2>
+            
+            {% if profile %}
+                <div class="profile-info">
+                    <div class="info-item">
+                        <strong>Company Name</strong>
+                        {{ profile.company_name }}
+                    </div>
+                    {% if profile.industry %}
+                    <div class="info-item">
+                        <strong>Industry</strong>
+                        {{ profile.industry }}
+                    </div>
+                    {% endif %}
+                    {% if profile.company_size %}
+                    <div class="info-item">
+                        <strong>Company Size</strong>
+                        {{ profile.company_size }}
+                    </div>
+                    {% endif %}
+                    {% if profile.founded_year %}
+                    <div class="info-item">
+                        <strong>Founded</strong>
+                        {{ profile.founded_year }}
+                    </div>
+                    {% endif %}
+                    {% if profile.company_website %}
+                    <div class="info-item">
+                        <strong>Website</strong>
+                        <a href="{{ profile.company_website }}" target="_blank">{{ profile.company_website }}</a>
+                    </div>
+                    {% endif %}
+                    {% if profile.company_email %}
+                    <div class="info-item">
+                        <strong>Email</strong>
+                        {{ profile.company_email }}
+                    </div>
+                    {% endif %}
+                    {% if profile.company_phone %}
+                    <div class="info-item">
+                        <strong>Phone</strong>
+                        {{ profile.company_phone }}
+                    </div>
+                    {% endif %}
+                    {% if profile.company_address %}
+                    <div class="info-item">
+                        <strong>Address</strong>
+                        {{ profile.company_address }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if profile.company_description %}
+                <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 10px;">About Us</strong>
+                    {{ profile.company_description }}
+                </div>
+                {% endif %}
+                
+                <button class="toggle-form-btn" onclick="toggleProfileForm()">✏️ Edit Profile</button>
+            {% else %}
+                <p style="color: #666; margin-bottom: 20px;">Complete your company profile to attract the best candidates!</p>
+            {% endif %}
+            
+            <!-- Profile Form -->
+            <div class="profile-form {% if not profile %}active{% endif %}" id="profileForm">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="company_name">Company Name *</label>
+                        <input type="text" id="company_name" name="company_name" 
+                               value="{{ profile.company_name if profile else '' }}" 
+                               placeholder="Enter company name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company_description">Company Description</label>
+                        <textarea id="company_description" name="company_description" 
+                                  placeholder="Tell candidates about your company...">{{ profile.company_description if profile else '' }}</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <input type="text" id="industry" name="industry" 
+                                   value="{{ profile.industry if profile else '' }}" 
+                                   placeholder="e.g., Technology, Finance">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company_size">Company Size</label>
+                            <select id="company_size" name="company_size">
+                                <option value="">Select size</option>
+                                <option value="1-10" {% if profile and profile.company_size == '1-10' %}selected{% endif %}>1-10 employees</option>
+                                <option value="11-50" {% if profile and profile.company_size == '11-50' %}selected{% endif %}>11-50 employees</option>
+                                <option value="51-200" {% if profile and profile.company_size == '51-200' %}selected{% endif %}>51-200 employees</option>
+                                <option value="201-500" {% if profile and profile.company_size == '201-500' %}selected{% endif %}>201-500 employees</option>
+                                <option value="501-1000" {% if profile and profile.company_size == '501-1000' %}selected{% endif %}>501-1000 employees</option>
+                                <option value="1000+" {% if profile and profile.company_size == '1000+' %}selected{% endif %}>1000+ employees</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="founded_year">Founded Year</label>
+                            <input type="text" id="founded_year" name="founded_year" 
+                                   value="{{ profile.founded_year if profile else '' }}" 
+                                   placeholder="e.g., 2020">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company_website">Website</label>
+                            <input type="url" id="company_website" name="company_website" 
+                                   value="{{ profile.company_website if profile else '' }}" 
+                                   placeholder="https://yourcompany.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_email">Company Email</label>
+                            <input type="email" id="company_email" name="company_email" 
+                                   value="{{ profile.company_email if profile else '' }}" 
+                                   placeholder="contact@yourcompany.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company_phone">Phone Number</label>
+                            <input type="tel" id="company_phone" name="company_phone" 
+                                   value="{{ profile.company_phone if profile else '' }}" 
+                                   placeholder="+1 (555) 123-4567">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company_address">Address</label>
+                        <input type="text" id="company_address" name="company_address" 
+                               value="{{ profile.company_address if profile else '' }}" 
+                               placeholder="123 Main St, City, State, Country">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        {% if profile %}Update Profile{% else %}Create Profile{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <h2>Your Job Postings ({{ jobs|length }})</h2>
+        
+        {% if jobs %}
+            <div class="jobs-grid">
+                {% for job in jobs %}
+                <div class="job-card">
+                    <h3>💼 {{ job.title }}</h3>
+                    <p><span class="job-badge">{{ job.job_type }}</span><span class="job-badge">{{ job.experience_level }}</span></p>
+                    <p><strong>📍 Location:</strong> {{ job.location }}</p>
+                    <p><strong>💰 Salary:</strong> {{ job.salary }}</p>
+                    <p><strong>🎯 Skills:</strong> {{ job.required_skills|join(', ') }}</p>
+                    <p><strong>📅 Posted:</strong> {{ job.date_posted }}</p>
+                    {% if job.application_link %}
+                    <p><strong>🔗 Apply Link:</strong> <a href="{{ job.application_link }}" target="_blank" style="color: #667eea;">View</a></p>
+                    {% endif %}
+                    
+                    <div class="job-actions">
+                        <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn-edit">✏️ Edit</a>
+                        <button class="btn-delete" onclick="deleteJob({{ job.id }})">🗑️ Delete</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No job postings yet</h3>
+                <p>Start attracting great talent by posting your first job!</p>
+                <a href="{{ url_for('add_job') }}" class="btn-add-job">➕ Post Your First Job</a>
+            </div>
+        {% endif %}
+        
+        {% if jobs %}
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('add_job') }}" class="btn-add-job">➕ Post Another Job</a>
+        </div>
+        {% endif %}
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleProfileForm() {
+            const form = document.getElementById('profileForm');
+            form.classList.toggle('active');
+        }
+        
+        function deleteJob(jobId) {
+            if (!confirm('Are you sure you want to delete this job posting? This action cannot be undone.')) {
+                return;
+            }
+            
+            fetch(`/company/job/delete/${jobId}`, { // This matches your @app.route
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    location.reload();
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete job. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
