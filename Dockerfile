@@ -15,6 +15,7 @@ COPY requirements.txt .
 # Install Python dependencies + spaCy model
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt && \
+    python -m spacy download en_core_web_sm==3.7.1
 
 # Copy the rest of the project files
 COPY . .
