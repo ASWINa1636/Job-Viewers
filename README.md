@@ -120,6 +120,20 @@ Job-Viewers/
 
 ## Usage
 
+## Screenshots
+
+### Home Page
+![Home](screenshots/index.png)
+
+### Company Registration
+![SignUp](screenshots/signup.png)
+
+### Company Login
+![Login](screenshots/login.png)
+
+### Company Dashboard
+![Dashboard](screenshots/profile.png)
+
 ### Starting the Application
 
 ```bash
