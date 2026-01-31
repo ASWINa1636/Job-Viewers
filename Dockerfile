@@ -9,13 +9,16 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy only requirements first (for Docker cache)
+COPY requirements.txt .
 
-# Install Python dependencies
+# Install Python dependencies + spaCy model
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt && \
     python -m spacy download en_core_web_sm
+
+# Copy the rest of the project files
+COPY . .
 
 # Environment variables
 ENV FLASK_ENV=production
